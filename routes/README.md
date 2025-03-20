@@ -1,3 +1,3 @@
 # Routing (API)
 
-Contains Flask Blueprints, use for creating API path for client to call, 
+Contains Flask Blueprints, use for creating API path or internal url path

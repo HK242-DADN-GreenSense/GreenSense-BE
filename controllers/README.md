@@ -1,3 +1,3 @@
 # Green Sense controller scripts
 
-## Contains code for handling logical step
+Contains code for handling logical step
