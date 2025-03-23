@@ -56,7 +56,7 @@ def ctl_servo(angle):
         }, 500
 
 
-def ctl_adafruit_pump(on: bool):
+def ctl_adafruit_pump(status: str):
     try:
         pump_feed = aio.feeds('pump')
     except Exception:
@@ -64,9 +64,9 @@ def ctl_adafruit_pump(on: bool):
         pump_feed = aio.create_feed(pump)
         
     try:
-        if on:
+        if status == 'on':
             aio.send_data(pump_feed.key, 1)
-        else:
+        elif status == 'off':
             aio.send_data(pump_feed.key, 0)
         
         return {
