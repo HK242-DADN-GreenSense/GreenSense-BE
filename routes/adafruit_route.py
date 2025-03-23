@@ -33,7 +33,6 @@ def route_adafruit_pump():
             'message': str(e)
         }), 500
   
-    
 @ada_fruit.route('/apa_fruit/send')
 def route_ada_fruit_send():
     """
@@ -50,7 +49,7 @@ def route_ada_fruit_send():
     """
     return ctl_feed_testing()
 
-@ada_fruit.route('/servo', methods=['POST'])
+@ada_fruit.route('/api/adafruit/servo', methods=['POST'])
 def servo_control():
     """
     Control servo position
@@ -120,4 +119,6 @@ def servo_control():
             'message': str(e)
         }), 500
 
-
+@ada_fruit.route('/api/adafruit/fan/<speed>', methods = ['GET'])
+def route_ada_fruit_send_fan(speed):
+    return send_fan_req(speed)
