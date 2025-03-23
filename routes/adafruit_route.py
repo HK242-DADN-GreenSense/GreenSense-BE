@@ -4,13 +4,50 @@ from flasgger import swag_from
 
 ada_fruit = Blueprint('ada_fruit', __name__)
 
-@ada_fruit.route('/api/adafruit/pump/on')
-def route_adafruit_pump_on():
-    return ctl_adafruit_pump(on=True)
-
-@ada_fruit.route('/api/adafruit/pump/off')
-def route_adafruit_pump_off():
-    return ctl_adafruit_pump(on=False)
+# New unified pump route with parameter
+@ada_fruit.route('/api/adafruit/pump', methods=['GET'])
+def route_adafruit_pump():
+    """
+    Control pump status (on/off)
+    ---
+    parameters:
+      - name: status
+        in: query
+        type: string
+        enum: [on, off]
+        required: true
+        description: Desired pump status
+        default: off
+    responses:
+      200:
+        description: Pump status changed successfully
+        schema:
+          properties:
+            success:
+              type: boolean
+              example: true
+      400:
+        description: Invalid status parameter
+        schema:
+          properties:
+            success:
+              type: boolean
+              example: false
+            message:
+              type: string
+              example: "Invalid status parameter. Use 'on' or 'off'"
+    """
+    status = request.args.get('status', '').lower()
+    
+    if status == 'on':
+        return ctl_adafruit_pump(on=True)
+    elif status == 'off':
+        return ctl_adafruit_pump(on=False)
+    else:
+        return jsonify({
+            'success': False,
+            'message': "Invalid status parameter. Use 'on' or 'off'"
+        }), 400
   
 @ada_fruit.route('/apa_fruit/send')
 def route_ada_fruit_send():

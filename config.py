@@ -7,5 +7,3 @@ ADAFRUIT_AIO_USERNAME   = "hieuduongk22bk"
 ADAFRUIT_AIO_KEY        = "aio_CgOe77qUN0Gdvfnb0sqMCTXErAdS"
 
 
-ADAFRUIT_AIO_USERNAME   = "trananhkhoitv"
-ADAFRUIT_AIO_KEY        = "aio_CNzr15m68WWUQ8iAb8RarG68ffFL"
