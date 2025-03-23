@@ -4,20 +4,25 @@ from flasgger import swag_from
 
 ada_fruit = Blueprint('ada_fruit', __name__)
 
-# New unified pump route with parameter
-@ada_fruit.route('/api/adafruit/pump', methods=['GET'])
+
+@ada_fruit.route('/api/adafruit/pump/', methods=['POST'])
 def route_adafruit_pump():
     """
     Control pump status (on/off)
     ---
     parameters:
-      - name: status
-        in: query
-        type: string
-        enum: [on, off]
+      - name: body
+        in: body
         required: true
-        description: Desired pump status
-        default: off
+        schema:
+          type: object
+          required:
+            - status
+          properties:
+            status:
+              type: string
+              description: Desired pump status
+              example: on
     responses:
       200:
         description: Pump status changed successfully
@@ -27,7 +32,7 @@ def route_adafruit_pump():
               type: boolean
               example: true
       400:
-        description: Invalid status parameter
+        description: Invalid request parameters
         schema:
           properties:
             success:
@@ -35,19 +40,35 @@ def route_adafruit_pump():
               example: false
             message:
               type: string
-              example: "Invalid status parameter. Use 'on' or 'off'"
+              example: "Missing status parameter"
+      500:
+        description: Server error
+        schema:
+          properties:
+            success:
+              type: boolean
+              example: false
+            message:
+              type: string
+              example: "Error message"
     """
-    status = request.args.get('status', '').lower()
-    
-    if status == 'on':
-        return ctl_adafruit_pump(on=True)
-    elif status == 'off':
-        return ctl_adafruit_pump(on=False)
-    else:
+    try:
+        data = request.get_json()
+        
+        if not data or 'status' not in data:
+            return jsonify({
+                'success': False,
+                'message': 'Missing status parameter'
+            }), 400
+            
+        status = data['status']
+        return jsonify(ctl_adafruit_pump(status))
+        
+    except Exception as e:
         return jsonify({
             'success': False,
-            'message': "Invalid status parameter. Use 'on' or 'off'"
-        }), 400
+            'message': str(e)
+        }), 500
   
 @ada_fruit.route('/apa_fruit/send')
 def route_ada_fruit_send():
