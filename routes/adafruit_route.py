@@ -25,7 +25,7 @@ def route_adafruit_pump():
             }), 400
             
         status = data['status']
-        return jsonify(ctl_adafruit_pump(status))
+        return ctl_adafruit_pump(status)
         
     except Exception as e:
         return jsonify({
@@ -33,24 +33,8 @@ def route_adafruit_pump():
             'message': str(e)
         }), 500
   
-@ada_fruit.route('/apa_fruit/send')
-def route_ada_fruit_send():
-    """
-    Test Adafruit IO connection
-    ---
-    responses:
-      200:
-        description: Successfully tested Adafruit IO connection
-        schema:
-          properties:
-            success:
-              type: boolean
-              example: true
-    """
-    return ctl_feed_testing()
-
 @ada_fruit.route('/api/adafruit/servo', methods=['POST'])
-def servo_control():
+def route_adafruit_servo():
     """
     Control servo position
     ---
@@ -111,7 +95,7 @@ def servo_control():
             }), 400
             
         angle = float(data['angle'])
-        return jsonify(ctl_servo(angle))
+        return ctl_adafruit_servo(angle)
         
     except Exception as e:
         return jsonify({
@@ -119,6 +103,22 @@ def servo_control():
             'message': str(e)
         }), 500
 
-@ada_fruit.route('/api/adafruit/fan/<speed>', methods = ['GET'])
-def route_ada_fruit_send_fan(speed):
-    return send_fan_req(speed)
+@ada_fruit.route('/api/adafruit/fan', methods=['POST'])
+def route_adafruit_fan(speed):
+    try:
+        data = request.get_json()
+        
+        if not data or 'speed' not in data:
+            return jsonify({
+                'success': False,
+                'message': 'Missing speed parameter'
+            }), 400
+            
+        speed = int(data['speed'])
+        return ctl_adafruit_fan(speed)
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
