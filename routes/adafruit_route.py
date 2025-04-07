@@ -4,15 +4,6 @@ from flasgger import swag_from
 
 ada_fruit = Blueprint('ada_fruit', __name__)
 
-# @ada_fruit.route('/api/adafruit/pump/on')
-# def route_adafruit_pump_on():
-#     return ctl_adafruit_pump(on=True)
-
-# @ada_fruit.route('/api/adafruit/pump/off')
-# def route_adafruit_pump_off():
-#     return ctl_adafruit_pump(on=False)
-  
-  
 @ada_fruit.route('/api/adafruit/pump/', methods=['POST'])
 def route_adafruit_pump():
     try:

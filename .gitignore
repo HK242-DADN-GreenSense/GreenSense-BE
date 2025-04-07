@@ -177,3 +177,7 @@ cython_debug/
 # Additional
 data/*
 !data/README.md
+playground.py
+
+# VSCode
+.vscode
