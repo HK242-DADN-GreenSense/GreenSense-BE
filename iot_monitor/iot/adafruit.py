@@ -1,6 +1,9 @@
 
 from Adafruit_IO import MQTTClient
 from typing import List, Tuple
+# from .. import logger
+
+from ..app import logger
 
 class Adafruit:
     __feeds_gadgets_list: List[str]
@@ -19,16 +22,16 @@ class Adafruit:
         feed_sensor = list(map(lambda x: x[0],  self.__feeds_gadgets_list))
         for feed_id in feed_sensor:
           self.__client.subscribe(feed_id)  # Đăng ký nhận dữ liệu từ feed
-        print("✅ Connected to Adafruit IO!")  # Hiển thị khi kết nối thành công
+        logger.info(msg="✅ Connected to Adafruit IO!") # Hiển thị khi kết nối thành công
   
           
       # Hàm callback khi bị mất kết nối
       def disconnected(client):
-        print("❌ Disconnected from Adafruit IO!")
+        logger.info(msg="❌ Disconnected from Adafruit IO!") # Hiển thị khi kết nối thành công
 
       # Hàm callback khi nhận được dữ liệu từ feed
       def message(client, feed_id, payload):
-        print(f"📩 Received data: {payload} from {feed_id}")
+        logger.info(msg=f"📩 Received data: {payload} from {feed_id}") # Hiển thị khi kết nối thành công
         self.__message_queue.append((feed_id, payload)) 
       
       # Gán các hàm callback

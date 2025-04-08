@@ -1,6 +1,8 @@
 
 from abc import ABC, abstractmethod
-from adafruit import Adafruit
+from .adafruit import Adafruit
+from ..app import logger
+# from .. import logger
 import time
 
 class Command(ABC):
@@ -24,9 +26,9 @@ class waterModify(Command):
         # print(self._feed_name,  self._data)
         self._client.update_data(self._feed_name, self._data)
         if (self._data == 0):
-            print("Turning pump off")
+            logger.info(msg="Turning pump off")
         elif (self._data == 1):
-            print("Turning pump on")
+            logger.info(msg="Turning pump on")
         
 class lightingModify(Command):
     def __init__(self, lightingSystem, feed_name, data):
@@ -35,9 +37,9 @@ class lightingModify(Command):
     def execute(self):
         self._client.update_data(self._feed_name, self._data)
         if (self._data == 0):
-            print("Turning off the light")
+            logger.info(msg="Turning off the light")
         else:
-            print("Turning on the light")
+            logger.info(msg="Turning on the light")
             
 
 class temperatureModify(Command):
@@ -47,9 +49,9 @@ class temperatureModify(Command):
     def execute(self):
         self._client.update_data(self._feed_name, self._data)
         if (self._data == 0): 
-            print("Closing cover")
+            logger.info(msg="Closing cover")
         else:
-            print("Opening cover")
+            logger.info(msg="Opening cover")
 
 class smartFarmController:
     def __init__(self):

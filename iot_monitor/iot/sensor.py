@@ -1,8 +1,13 @@
 from Adafruit_IO import MQTTClient
+from datetime import datetime
 from abc import ABC, abstractmethod
-from adafruit import Adafruit
-from command import waterModify, smartFarmController, lightingModify, temperatureModify
-import time
+import time 
+from .adafruit import Adafruit
+from .command import waterModify, smartFarmController, lightingModify, temperatureModify
+from ..collection.humid_collection import humid_collection
+from ..collection.light_collection import light_collection
+from ..collection.temperature_collection import temperature_collection
+
 
 def get_mode(device: str) -> str:
   with open("/home/khoitrananh/working/CO3109/greensense_be/iot_env.txt", 'r') as fopen:
@@ -29,6 +34,7 @@ class sensorManager:
     self.__listener[eventType].update(data)
 
     log_data = {
+      'time': datetime.now(),
       'event_type': eventType,
       'data': data
     }
@@ -82,7 +88,6 @@ class Sensor:
   def updateLightingData(self, data):
     self.sensor.notify('light-sensor', data)
 
-
 class sensorListener(ABC):
   _client: Adafruit
   _feed_gadget_modify: str
@@ -104,8 +109,18 @@ class logListener(sensorListener):
     pass
 
   def update(self, data):
-    print(data)
-    # print(f'Update sensor {data} with value{data}')
+    document = {
+      "time": data['time'],
+      "data": int(data['data'])
+    }
+    event_type = data['event_type']
+    
+    if event_type == 'humid':
+      humid_collection.insert_one(document)
+    elif event_type == 'temperature':
+      temperature_collection.insert_one(document)
+    elif event_type == 'light-sensor':
+      light_collection.insert_one(document)
 
 
 class humidListener(sensorListener):
@@ -114,6 +129,7 @@ class humidListener(sensorListener):
 
 
   def update(self, data):
+    
     # tạo ra 1 đối tượng để điều chỉnh humid listener
 
     # logic điều chỉnh độ ẩm như thế nào thì bỏ vào đây
@@ -135,15 +151,15 @@ class temperatureListener(sensorListener):
   def __init__(self, feed_sensor, feed_gadget_modify, client: Adafruit):
     super().__init__(feed_sensor, feed_gadget_modify, client)
 
-  def update(self, data):
-    print("servo mode: ", get_mode('servo'))
-    if get_mode('servo') == 'automatic' and int(data) > 60:
+  def update(self, data):  
+    if get_mode('servo') != 'automatic':
+      return
+    
+    if int(data) > 60:
       servo_angle = 180
       self._controller.add_command(temperatureModify(self._client, self._feed_gadget_modify, servo_angle))
       self._controller.excute_command()
-
-      
-    elif get_mode('servo') == 'automatic' and int(data) < 40:
+    elif int(data) < 40:
       servo_angle = 0
       self._controller.add_command(temperatureModify(self._client, self._feed_gadget_modify, servo_angle))
       self._controller.excute_command()
@@ -156,12 +172,15 @@ class lightingListener(sensorListener):
     super().__init__(feed_sensor, feed_gadget_modify, client)
   
   def update(self, data):
-    if get_mode("light") == "automatic" and int(data) < 30:
+    if get_mode("light") != "automatic":
+      return
+    
+    if int(data) < 30:
       light_power = 100 - int(data)
       self._controller.add_command(lightingModify(self._client, self._feed_gadget_modify, light_power))
       self._controller.excute_command()
       
-    elif get_mode("light") == "automatic" and int(data) > 60:
+    elif int(data) > 60:
       light_power = 0
       self._controller.add_command(lightingModify(self._client, self._feed_gadget_modify, light_power))
       self._controller.excute_command()

@@ -20,6 +20,12 @@
     pip install -r requirement.txt
 ```
 
+## Run monitor and DB updator process
+
+``` bash
+    python3 -m iot_monitor.app
+```
+
 ## Run Flask
 
 ``` bash

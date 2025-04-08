@@ -8,6 +8,9 @@ DEPLOYMENT_ENV = {
   ]
 }
 
-LOG_FILE = "./iot_monitor.log"
+LOG_FORMAT = '%(asctime)s %(message)s'
+LOG_FILE = "/home/khoitrananh/working/CO3109/greensense_be/iot_monitor.log"
+
+MONGO_URI = "mongodb+srv://greensense_dev:641abbPRVszJJrbT@cluster0.yvtnh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 
