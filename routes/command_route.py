@@ -1,5 +1,4 @@
 from flask import Blueprint
-
 from ..controllers.command_controller import *
 command = Blueprint('command_blueprint', __name__)
 

@@ -1,4 +1,5 @@
 from Adafruit_IO import Client, RequestError, Feed
+import time
 
 from .. import aio
 
@@ -27,6 +28,8 @@ def ctl_adafruit_servo(angle):
         
         # Send angle value to the feed
         aio.send_data(servo_feed.key, angle)
+        print(f'{time.strftime('%Y-%m-%d %H:%M:%S')}: fan was opened with angle at {angle}')
+        
         
         return {
             'success': True,
@@ -55,8 +58,10 @@ def ctl_adafruit_pump(status: str):
     try:
         if status == 'on':
             aio.send_data(pump_feed.key, 1)
+            print(f'{time.strftime('%Y-%m-%d %H:%M:%S')}: pump was turned on')
         elif status == 'off':
             aio.send_data(pump_feed.key, 0)
+            print(f'{time.strftime('%Y-%m-%d %H:%M:%S')}: pump was turned off')
             
         return {
             'success': True,
@@ -89,7 +94,7 @@ def ctl_adafruit_fan(speed):
         
     try: 
         aio.send_data(feed_testing.key, speed)
-            
+        print(f'{time.strftime('%Y-%m-%d %H:%M:%S')}: fan was turned on with speed at {speed}')
         
         return {
             'success': True,
