@@ -1,4 +1,3 @@
-
 from Adafruit_IO import MQTTClient
 from typing import List, Tuple
 # from .. import logger

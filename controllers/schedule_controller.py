@@ -4,7 +4,7 @@ from time import sleep
     
 def ctl_pump_schedule_control():
     ctl_adafruit_pump(status='on')
-    sleep(20)
+    sleep(10)
     ctl_adafruit_pump(status='off')
     
 def ctl_pump_interval_schedule(time_unit: str, amount: int):

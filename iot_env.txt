@@ -1,1 +1,1 @@
-{"pump": "manual", "fan": "manual", "servo": "manual", "light": "manual"}
+{"pump": "automatic", "fan": "manual", "servo": "manual", "light": "manual"}

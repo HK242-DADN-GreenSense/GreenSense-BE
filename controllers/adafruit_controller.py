@@ -1,4 +1,4 @@
-from Adafruit_IO import Client, RequestError, Feed
+from Adafruit_IO import Feed
 import time
 
 from .. import aio
