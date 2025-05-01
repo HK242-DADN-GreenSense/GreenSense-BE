@@ -7,6 +7,8 @@ from .command import waterModify, smartFarmController, lightingModify, temperatu
 from ..collection.humid_collection import humid_collection
 from ..collection.light_collection import light_collection
 from ..collection.temperature_collection import temperature_collection
+from ...collection.notification_collection import notification_collection
+from ...services.socketio_service import emit_sensor_data
 
 
 def get_mode(device: str) -> str:
@@ -38,6 +40,20 @@ class sensorManager:
       'event_type': eventType,
       'data': data
     }
+
+    # Emit to WebSocket clients
+    emit_sensor_data(eventType, data, log_data['time'])
+
+    # Check for notification rules
+    active_notifications = notification_collection.find({'event_type': eventType, 'is_active': True})
+    for rule in active_notifications:
+        threshold = rule['threshold']
+        condition = rule['condition']
+        message = rule['message']
+
+        if (condition == 'greater_than' and int(data) > threshold) or \
+           (condition == 'less_than' and int(data) < threshold):
+            emit_sensor_data('notification', message, log_data['time'])
 
     self.__listener['log'].update(log_data)
 
