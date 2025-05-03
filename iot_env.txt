@@ -1,1 +1,0 @@
-{"pump": "automatic", "fan": "manual", "servo": "manual", "light": "manual"}

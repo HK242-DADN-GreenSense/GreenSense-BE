@@ -4,21 +4,15 @@ from abc import ABC, abstractmethod
 import time 
 from .adafruit import Adafruit
 from .command import waterModify, smartFarmController, lightingModify, temperatureModify
-from ..collection.humid_collection import humid_collection
-from ..collection.light_collection import light_collection
-from ..collection.temperature_collection import temperature_collection
+from ...collection.humid_collection import humid_collection
+from ...collection.light_collection import light_collection
+from ...collection.temperature_collection import temperature_collection
+from ...collection.activity_collection import activity_collection
 from ...collection.notification_collection import notification_collection
 from ...services.socketio_service import emit_sensor_data
-
-
-def get_mode(device: str) -> str:
-  with open("/home/khoitrananh/working/CO3109/greensense_be/iot_env.txt", 'r') as fopen:
-    current_modes = eval(fopen.read())
-  
-  if device not in current_modes:
-    return ""
-  
-  return current_modes[device]
+from ...common.iot_mode import get_mode, get_automatic_options
+from ..app import logger
+from ...config import IOT_ENV
 
 class sensorManager:
   
@@ -40,6 +34,8 @@ class sensorManager:
       'event_type': eventType,
       'data': data
     }
+    
+    # print(str(log_data))
 
     # Emit to WebSocket clients
     emit_sensor_data(eventType, data, log_data['time'])
@@ -54,8 +50,9 @@ class sensorManager:
         if (condition == 'greater_than' and int(data) > threshold) or \
            (condition == 'less_than' and int(data) < threshold):
             emit_sensor_data('notification', message, log_data['time'])
-
+            
     self.__listener['log'].update(log_data)
+    
 
 class Sensor:
   sensor: sensorManager
@@ -74,6 +71,8 @@ class Sensor:
         self.sensor.subscribe(feed_id[0], temperatureListener(feed_id[0], feed_id[1], self.__client))
       elif feed_id[0] == 'light-sensor':
         self.sensor.subscribe(feed_id[0], lightingListener(feed_id[0], feed_id[1], self.__client))
+      else:
+        self.sensor.subscribe(feed_id[0], gadgetListener(feed_id[0], None, self.__client))
 
     self.sensor.subscribe('log', logListener())
 
@@ -93,6 +92,9 @@ class Sensor:
         elif datas[0][0] == 'light-sensor':
           self.updateLightingData(datas[0][1])
 
+        else:
+          self.updateActivityLog(datas[0][0], datas[0][1])
+          
         self.__client.pop_message_queue()
 
   def updateHumidData(self, data):
@@ -103,6 +105,11 @@ class Sensor:
 
   def updateLightingData(self, data):
     self.sensor.notify('light-sensor', data)
+    
+  def updateActivityLog(self, gadget_type, data):
+    self.sensor.notify(gadget_type, data)
+    
+    
 
 class sensorListener(ABC):
   _client: Adafruit
@@ -133,11 +140,21 @@ class logListener(sensorListener):
     
     if event_type == 'humid':
       humid_collection.insert_one(document)
+      logger.info(msg=f"Update to MongoDB, insert to collection {event_type} document {str(document)}")
     elif event_type == 'temperature':
       temperature_collection.insert_one(document)
+      logger.info(msg=f"Update to MongoDB, insert to collection {event_type} document {str(document)}")
     elif event_type == 'light-sensor':
       light_collection.insert_one(document)
-
+      logger.info(msg=f"Update to MongoDB, insert to collection {event_type} document {str(document)}")
+    else:
+      document = {
+        "time": data['time'],
+        "data": int(data['data']),
+        "activity_type": data['event_type']
+      }
+      activity_collection.insert_one(document=document)
+      logger.info(msg=f"Update to MongoDB, insert to collection 'activity' document {str(document)}")
 
 class humidListener(sensorListener):
   def __init__(self, feed_sensor, feed_gadget_modify, client: Adafruit):
@@ -145,18 +162,21 @@ class humidListener(sensorListener):
 
 
   def update(self, data):
-    
+    if get_mode('pump') != 'automatic':
+      return
     # tạo ra 1 đối tượng để điều chỉnh humid listener
 
     # logic điều chỉnh độ ẩm như thế nào thì bỏ vào đây
-    if get_mode('pump') == 'automatic' and int(data) < 50:
+    pump_automatic_options = get_automatic_options("pump")
+    
+    if (int(data) < int(pump_automatic_options['threshold'])):
       # Turn on water pump
       update_data = 1
       self._controller.add_command(waterModify(self._client, self._feed_gadget_modify, update_data))
       self._controller.excute_command()
       
       # Turn off water pump
-      time.sleep(20)
+      time.sleep(int(pump_automatic_options['duration']))
       update_data = 0
       self._controller.add_command(waterModify(self._client, self._feed_gadget_modify, update_data))
       self._controller.excute_command()
@@ -171,11 +191,23 @@ class temperatureListener(sensorListener):
     if get_mode('servo') != 'automatic':
       return
     
-    if int(data) > 60:
-      servo_angle = 180
-      self._controller.add_command(temperatureModify(self._client, self._feed_gadget_modify, servo_angle))
-      self._controller.excute_command()
-    elif int(data) < 40:
+    servo_automatic_option = get_automatic_options('servo')
+    temperature_list = servo_automatic_option['temperatures']
+    angle_list = servo_automatic_option['angles']
+    
+    print(angle_list)
+    
+    flag_is_modified = False
+    for index, temperature in enumerate(temperature_list):   
+      if int(data) > temperature:
+        # Open servo
+        servo_angle = angle_list[index]
+        self._controller.add_command(temperatureModify(self._client, self._feed_gadget_modify, servo_angle))
+        self._controller.excute_command()
+        flag_is_modified = True
+        break
+    if not flag_is_modified:
+      # Close servo
       servo_angle = 0
       self._controller.add_command(temperatureModify(self._client, self._feed_gadget_modify, servo_angle))
       self._controller.excute_command()
@@ -191,14 +223,29 @@ class lightingListener(sensorListener):
     if get_mode("light") != "automatic":
       return
     
-    if int(data) < 30:
-      light_power = 100 - int(data)
-      self._controller.add_command(lightingModify(self._client, self._feed_gadget_modify, light_power))
-      self._controller.excute_command()
-      
-    elif int(data) > 60:
+    light_automatic_option = get_automatic_options("light")
+    light_list = light_automatic_option['lights']
+    light_intensity_list = light_automatic_option['intensities']
+    
+    flag_is_modified = False
+    for index, light in enumerate(light_list):   
+      if int(data) < light:
+        # Turn on light
+        light_power = light_intensity_list[index]
+        self._controller.add_command(lightingModify(self._client, self._feed_gadget_modify, light_power))
+        self._controller.excute_command()
+        flag_is_modified = True
+        break
+    if not flag_is_modified:
+      # Turn off light
       light_power = 0
       self._controller.add_command(lightingModify(self._client, self._feed_gadget_modify, light_power))
       self._controller.excute_command()
+class gadgetListener(sensorListener):
+  def __init__(self, feed_sensor, feed_gadget_modify, client: Adafruit):
+    super().__init__(feed_sensor, feed_gadget_modify, client)
+    
+  def update(self, data):
+    pass
 
 

@@ -32,17 +32,18 @@ swagger_config = {
 swagger = Swagger(app, config=swagger_config)
 
 client : MongoClient = MongoClient(MONGO_URI)
-db : Database = client.GreenSenseDB
+db : Database = client.greensense
 aio = Client(username=ADAFRUIT_AIO_USERNAME, key=ADAFRUIT_AIO_KEY)
 scheduder = BackgroundScheduler() 
 scheduder.start()
 
 from .routes.command_route      import command      as command_blueprint
 from .routes.adafruit_route     import ada_fruit    as adafruit_blueprint
-from .routes.mode_route         import IOT_mode     as iot_mode_blueprint
+from .routes.iot_mode_route     import IOT_mode     as iot_mode_blueprint
 from .routes.schedule_route     import schedule_blueprint
 from .routes.app_route          import app_route     as app_blueprint
 from .routes.notification_route import notification_route as notification_blueprint
+from .routes.sensor_data_route  import sensor_data as sensor_data_blueprint
 
 app.register_blueprint(command_blueprint)
 app.register_blueprint(adafruit_blueprint)
@@ -50,6 +51,7 @@ app.register_blueprint(iot_mode_blueprint)
 app.register_blueprint(schedule_blueprint)
 app.register_blueprint(app_blueprint, url_prefix='')  # Explicitly set empty prefix
 app.register_blueprint(notification_blueprint, url_prefix='')
+app.register_blueprint(sensor_data_blueprint)
 
 # Import and initialize your socketio service
 from .services.socketio_service import initialize_socketio

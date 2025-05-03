@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 from ..config import MONGO_URI
+from .. import db
 
-client = MongoClient(MONGO_URI)
-db = client['greensense']
 notification_collection = db['notifications']

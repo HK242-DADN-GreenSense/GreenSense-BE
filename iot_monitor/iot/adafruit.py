@@ -19,9 +19,10 @@ class Adafruit:
 
       def connected(client):
         feed_sensor = list(map(lambda x: x[0],  self.__feeds_gadgets_list))
+        # print(feed_sensor)
         for feed_id in feed_sensor:
           self.__client.subscribe(feed_id)  # Đăng ký nhận dữ liệu từ feed
-        logger.info(msg="✅ Connected to Adafruit IO!") # Hiển thị khi kết nối thành công
+        logger.info(msg="✅ Sensor - Connected to Adafruit IO!") # Hiển thị khi kết nối thành công
   
           
       # Hàm callback khi bị mất kết nối

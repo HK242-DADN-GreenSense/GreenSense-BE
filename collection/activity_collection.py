@@ -1,12 +1,13 @@
 from pymongo.collection import Collection 
 from typing import TypedDict
 from datetime import datetime
+from .. import db
+# from ..app import db
 
-from ..app import db
-
-class Temperature(TypedDict):
+class Activity(TypedDict):
     time: datetime
     data: int
+    activity_type: str
 
-temperature_collection: Collection[Temperature] = db['temperature']
+activity_collection: Collection[Activity] = db['activity']
 # command_collection: Collection[Command] = db["command"]

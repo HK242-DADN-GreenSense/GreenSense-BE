@@ -1,0 +1,43 @@
+{
+    "pump": {
+        "mode": "automatic",
+        "automatic_options": {
+            "threshold": 20,
+            "duration": 3
+        }
+    },
+    "servo": {
+        "mode": "automatic",
+        "automatic_options": {
+            "temperatures": [
+                60,
+                50,
+                40,
+                30
+            ],
+            "angles": [
+                180,
+                135,
+                90,
+                45
+            ]
+        }
+    },
+    "light": {
+        "mode": "automatic",
+        "automatic_options": {
+            "lights": [
+                10,
+                20,
+                50,
+                80
+            ],
+            "intensities": [
+                4,
+                3,
+                2,
+                1
+            ]
+        }
+    }
+}

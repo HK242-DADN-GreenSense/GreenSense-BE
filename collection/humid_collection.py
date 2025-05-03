@@ -1,8 +1,7 @@
 from pymongo.collection import Collection 
 from typing import TypedDict
 from datetime import datetime
-
-from ..app import db
+from .. import db
 
 class Humid(TypedDict):
     time: datetime
