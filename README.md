@@ -23,11 +23,13 @@
 ## Run monitor and DB updator process
 
 ``` bash
-    python3 -m iot_monitor.app
+    cd .. && python3 -m greensense_be.iot_monitor.app
 ```
 
 ## Run Flask
 
+Open another terminal in greensense_be folder and run the following command:
+
 ``` bash
-    flask run
+    cd .. && python3 -m greensense_be.__init__
 ```

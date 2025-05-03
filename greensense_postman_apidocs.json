@@ -1,0 +1,799 @@
+{
+	"info": {
+		"_postman_id": "bc014e2b-29d9-47ee-b2b8-3acefe7d20a1",
+		"name": "RESTful API",
+		"description": "# 🚀 Get started here\n\nThis collection guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this collection**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these request types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT and PATCH requests.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a variable called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Tests\" tab**\n\nTests help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/b5f280a7-4b09-48ec-857f-0a7ed99d7ef8/U2NyZWVuc2hvdCAyMDIzLTAzLTI3IGF0IDkuNDcuMjggUE0ucG5n\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n- Add more scripts in \"Tests\" to verify if the API works as expected and execute flows.\n    \n\n## ℹ️ Resources\n\n[Building requests](https://learning.postman.com/docs/sending-requests/requests/)  \n[Authorizing requests](https://learning.postman.com/docs/sending-requests/authorization/)  \n[Using variables](https://learning.postman.com/docs/sending-requests/variables/)  \n[Managing environments](https://learning.postman.com/docs/sending-requests/managing-environments/)  \n[Writing scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39000944"
+	},
+	"item": [
+		{
+			"name": "Fan - speed_0",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"speed\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/adafruit/fan/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"adafruit",
+						"fan",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fan - speed_125",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"speed\": 125\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/adafruit/fan/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"adafruit",
+						"fan",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fan - speed_255",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"speed\": 255\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/adafruit/fan/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"adafruit",
+						"fan",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pump - status_off",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"off\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/adafruit/pump/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"adafruit",
+						"pump",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pump - status_on",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"on\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/adafruit/pump/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"adafruit",
+						"pump",
+						""
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": []
+		},
+		{
+			"name": "Pump - turn on with duration",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"duration\": \"20\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/adafruit/pump/on",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"adafruit",
+						"pump",
+						"on"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Servo - angle_45",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"angle\": 45\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/adafruit/servo",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"adafruit",
+						"servo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Servo - angle_90",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"angle\": 90\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/adafruit/servo/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"adafruit",
+						"servo",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Servo - angle_135",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"angle\": 135\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/adafruit/servo/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"adafruit",
+						"servo",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Servo - angle_180",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"angle\": 180\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/adafruit/servo/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"adafruit",
+						"servo",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Light",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"intensity\": \"3\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/adafruit/light",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"adafruit",
+						"light"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Schedule - Interval - Pump",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"device_id\": \"pump\", \n    \"trigger\": \"interval\", \n    \"trigger_options\": {\n        \"seconds\": 30\n    }, \n    \"action\": \"on\", \n    \"action_options\": {\n        \"duration\": \"5\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/job/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"job",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Schedule - Interval - Servo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"device_id\": \"servo\", \n    \"trigger\": \"interval\", \n    \"trigger_options\": {\n        \"seconds\": 30\n    }, \n    \"action\": \"on\", \n    \"action_options\": {\n        \"angle\": 135\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/job/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"job",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Schedule - Interval - Light",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"device_id\": \"light\", \n    \"trigger\": \"interval\", \n    \"trigger_options\": {\n        \"seconds\": 30\n    }, \n    \"action\": \"on\", \n    \"action_options\": {\n        \"intensity\": \"2\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/job/add",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"job",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Schedule - Remove job",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"job_id\": \"8fbc82029aed4e578f56245aec22222b\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/job/remove",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"job",
+						"remove"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Schedule - Get job",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/job/get?device_id=servo",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"job",
+						"get"
+					],
+					"query": [
+						{
+							"key": "device_id",
+							"value": "servo"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Schedule - Load job",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/job/load",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"job",
+						"load"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mode - get all mode",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/mode/get",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"mode",
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mode - Pump - Automatic",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"automatic_options\": {\n        \"threshold\": 30 ,\n        \"duration\": 30\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/mode/pump/automation",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"mode",
+						"pump",
+						"automation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mode - Pump - Manual",
+			"request": {
+				"method": "POST",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Mode - Light  - Automatic",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"automatic_options\": {\n        \"lights\": [1, 2, 3, 4],\n        \"intensities\": [80, 50, 20, 10]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/mode/light/automation",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"mode",
+						"light",
+						"automation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mode - Light  - Manual",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/mode/light/manual",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"mode",
+						"light",
+						"manual"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mode - Servo  - Automatic",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"automatic_options\": {\n        \"temperatures\": [30, 40, 50, 60],\n        \"angles\": [45, 90, 135, 180]\n    }\n}   ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/mode/servo/automation",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"mode",
+						"servo",
+						"automation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mode - Servo  - Manual",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/mode/servo/manual",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"mode",
+						"servo",
+						"manual"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sensor data - get humid data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sensor_data/humid?year=2025&month=5&date=2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sensor_data",
+						"humid"
+					],
+					"query": [
+						{
+							"key": "year",
+							"value": "2025"
+						},
+						{
+							"key": "month",
+							"value": "5"
+						},
+						{
+							"key": "date",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sensor data - get light data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sensor_data/light?year=2025&month=5&date=2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sensor_data",
+						"light"
+					],
+					"query": [
+						{
+							"key": "year",
+							"value": "2025"
+						},
+						{
+							"key": "month",
+							"value": "5"
+						},
+						{
+							"key": "date",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sensor data - get temperature data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sensor_data/temperature?year=2025&month=5&date=2",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sensor_data",
+						"temperature"
+					],
+					"query": [
+						{
+							"key": "year",
+							"value": "2025"
+						},
+						{
+							"key": "month",
+							"value": "5"
+						},
+						{
+							"key": "date",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8080"
+		}
+	]
+}

@@ -66,29 +66,3 @@ def route_shed_remove_job():
         
     job_id = data['job_id']
     return ctl_job_remove(job_id)
-
-@schedule_blueprint.route('/api/pump/schedule/add/interval/<time_unit>/<interval>')
-def route_sched_pump_add_job(time_unit: str, amount: int):
-    try: 
-        data = request.get_json()
-        
-        if not data:
-            return jsonify({
-				'success': False,
-				'message': 'Empty body'
-			}), 400
-            
-        
-        
-    except Exception as e:
-        return jsonify({
-            "success": False,
-            "message": str(e)
-        }), 500
-    
-    return ctl_pump_interval_schedule(time_unit, int(amount))
-
-@schedule_blueprint.route('/api/pump/schedule/remove/<job_id>')
-def route_sched_pump_remove_job(job_id):
-    return ctl_pump_remove_job(job_id)
-    

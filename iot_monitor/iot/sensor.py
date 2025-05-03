@@ -195,7 +195,7 @@ class temperatureListener(sensorListener):
     temperature_list = servo_automatic_option['temperatures']
     angle_list = servo_automatic_option['angles']
     
-    print(angle_list)
+    # print(angle_list)
     
     flag_is_modified = False
     for index, temperature in enumerate(temperature_list):   
