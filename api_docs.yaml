@@ -1,0 +1,1279 @@
+openapi: 3.0.3
+
+info:
+  title: Adafruit Pump Control API
+  version: 1.0.0
+  description: APIs to control a green house IOT devices.
+
+servers:
+  - url: http://127.0.0.1:5000
+    description: Local development server
+
+tags:
+  - name: Manual mode
+    description: Access these APIs to turn on/off an IOT device at your pleasure
+  - name: Schedule mode
+    description: Create tasks for the IOT device to execute at your set time
+  - name: Automation mode
+    description: Add sensor-based conditions that trigger device actions automatically
+  - name: Data
+    description: Get sensor data from IOT devices for various purposes (monitoring, automation, analysis)
+    
+paths:
+  /api/adafruit/pump/on:
+    post:
+      tags: 
+        - Manual mode
+      summary: Turn on the pump for a specified duration
+      operationId: turnPumpOn
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - duration
+              properties:
+                duration:
+                  type: integer
+                  minimum: 1
+                  description: Duration in seconds to turn on the pump
+      responses:
+        '200':
+          description: Pump successfully turned on
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Pump was turn on for 5 second(s)"
+        '400':
+          description: Bad request due to missing or invalid duration parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Missing duration parameter"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+
+  /api/adafruit/servo:
+    post:
+      tags: 
+        - Manual mode
+      summary: Open the cover to a specified angle using the servo
+      operationId: setServoAngle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - angle
+              properties:
+                angle:
+                  type: integer
+                  minimum: 0
+                  maximum: 180
+                  description: Angle in degrees to open the cover (0–180)
+      responses:
+        '200':
+          description: Servo angle successfully set
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  angle:
+                    type: integer
+                    example: 90
+        '400':
+          description: Bad request due to missing or invalid angle parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Missing angle parameter, or angle is not int, or angle is not between 0 and 180"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+  /api/adafruit/fan:
+    post:
+      tags: 
+        - Manual mode
+      summary: Turn on the fan with a specified speed
+      operationId: setFanSpeed
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - speed
+              properties:
+                speed:
+                  type: integer
+                  minimum: 0
+                  maximum: 255
+                  description: Fan speed value (0–255)
+      responses:
+        '200':
+          description: Fan speed successfully set
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  current_fan_speed:
+                    type: integer
+                    example: 128
+        '400':
+          description: Bad request due to missing or invalid speed parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Missing speed parameter, speed is not number, speed is not between 0 and 255"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+  /api/job/get?device_id=light:
+    get:
+      tags:
+        - Schedule mode
+      summary: Get the current jobs of a light device
+      description: Fetch scheduled jobs specifically for the light device.
+      responses:
+        '200':
+          description: Successfully fetched light jobs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Fetch job successfully
+                  job_list:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LightJob'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/job/get?device_id=pump:
+    get:
+      tags:
+        - Schedule mode
+      summary: Get the current jobs of a pump device
+      description: Fetch scheduled jobs specifically for the pump device.
+      responses:
+        '200':
+          description: Successfully fetched pump jobs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Fetch job successfully
+                  job_list:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PumpJob'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/job/get?device_id=servo:
+    get:
+      tags:
+        - Schedule mode
+      summary: Get the current jobs of a servo device
+      description: Fetch scheduled jobs specifically for the servo device.
+      responses:
+        '200':
+          description: Successfully fetched servo jobs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Fetch job successfully
+                  job_list:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ServoJob'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/job/add:
+    post:
+      tags:
+        - Schedule mode
+      summary: Add a new scheduled job for a device
+      description: |
+        Add a scheduled job to a device. The request body must follow the structure
+        corresponding to the `device_id` (pump, light, or servo).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/PumpJob'
+                - $ref: '#/components/schemas/LightJob'
+                - $ref: '#/components/schemas/ServoJob'
+              discriminator:
+                propertyName: device_id
+                mapping:
+                  pump: '#/components/schemas/PumpJob'
+                  light: '#/components/schemas/LightJob'
+                  servo: '#/components/schemas/ServoJob'
+      responses:
+        '200':
+          description: Job successfully added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Job added successfully
+        '400':
+          description: Bad request (e.g., missing or invalid parameters)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Missing or invalid parameters
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+  
+  /api/job/remove:
+    delete:
+      tags:
+        - Schedule mode
+      summary: Remove a scheduled job
+      description: Remove a job from the currently scheduled job list using its job_id.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - job_id
+              properties:
+                job_id:
+                  type: string
+                  example: "job-001"
+      responses:
+        '200':
+          description: Job successfully removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Job removed successfully
+        '400':
+          description: Bad request (e.g., job_id missing or invalid)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Missing or invalid job_id
+        '404':
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Job not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/mode/get:
+    get:
+      tags:
+        - Automation mode
+      summary: Get current modes of all IoT devices
+      description: Retrieve the operating mode and automation settings for pump, servo, and light devices.
+      responses:
+        '200':
+          description: Successfully fetched device modes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pump:
+                    type: object
+                    properties:
+                      mode:
+                        type: string
+                        example: automatic
+                      automatic_options:
+                        type: object
+                        properties:
+                          threshold:
+                            type: integer
+                            example: 30
+                          duration:
+                            type: integer
+                            example: 5
+                  servo:
+                    type: object
+                    properties:
+                      mode:
+                        type: string
+                        example: automatic
+                      automatic_options:
+                        type: object
+                        properties:
+                          temperatures:
+                            type: array
+                            items:
+                              type: number
+                            example: [30, 40, 50, 60]
+                          angles:
+                            type: array
+                            items:
+                              type: number
+                            example: [45, 90, 135, 180]
+                  light:
+                    type: object
+                    properties:
+                      mode:
+                        type: string
+                        example: automatic
+                      automatic_options:
+                        type: object
+                        properties:
+                          lights:
+                            type: array
+                            items:
+                              type: number
+                            example: [1, 2, 3, 4]
+                          intensities:
+                            type: array
+                            items:
+                              type: number
+                            example: [80, 50, 20, 10]
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/mode/pump/automation:
+    post:
+      tags:
+        - Automation mode
+      summary: Set pump to automatic mode
+      description: Set the pump device to automatic mode using threshold and duration values.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - automatic_options
+              properties:
+                automatic_options:
+                  type: object
+                  required:
+                    - threshold
+                    - duration
+                  properties:
+                    threshold:
+                      type: number
+                      description: |
+                        When the humid sensor data drops below this number, 
+                        the pump will be turned on for a set amount of time.
+                      example: 30
+                    duration:
+                      type: number
+                      description: Duration in seconds the pump will stay on
+                      example: 5
+      responses:
+        '200':
+          description: Pump mode successfully set to automatic
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Pump set to automatic mode
+        '400':
+          description: Missing or invalid automatic_options
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid or missing automatic_options
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/mode/pump/manual:
+    post:
+      tags:
+        - Manual mode
+      summary: Set pump to manual mode
+      description: Switch the pump device from automatic to manual mode.
+      requestBody:
+        required: false
+        description: No request body required
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+              description: No body content is needed for switching to manual mode
+      responses:
+        '200':
+          description: Pump mode successfully set to manual
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Pump set to manual mode
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/mode/light/manual:
+    post:
+      tags:
+        - Manual mode
+      summary: Set light to manual mode
+      description: Switch the light device from automatic to manual mode.
+      requestBody:
+        required: false
+        description: No request body required
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+              description: No body content is needed for switching to manual mode
+      responses:
+        '200':
+          description: Light mode successfully set to manual
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Light set to manual mode
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/mode/servo/manual:
+    post:
+      tags:
+        - Manual mode
+      summary: Set servo to manual mode
+      description: Switch the servo device from automatic to manual mode.
+      requestBody:
+        required: false
+        description: No request body required
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+              description: No body content is needed for switching to manual mode
+      responses:
+        '200':
+          description: Servo mode successfully set to manual
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Servo set to manual mode
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/mode/servo/automation:
+    post:
+      tags:
+        - Automation mode
+      summary: Set servo to automatic mode
+      description: >
+        Switch the servo device to automatic mode. When the temperature sensor detects that the temperature exceeds one of the values in the `temperatures` list, 
+        the servo will open at the corresponding angle from the `angles` list (by index).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - automatic_options
+              properties:
+                automatic_options:
+                  type: object
+                  required:
+                    - temperatures
+                    - angles
+                  properties:
+                    temperatures:
+                      type: array
+                      description: List of temperature thresholds that trigger servo movement
+                      items:
+                        type: number
+                      example: [30, 40, 50]
+                    angles:
+                      type: array
+                      description: List of angles corresponding to the temperature thresholds
+                      items:
+                        type: number
+                      example: [45, 90, 135]
+      responses:
+        '200':
+          description: Servo mode successfully set to automatic
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Servo set to automatic mode
+        '400':
+          description: Missing or invalid automatic_options
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid or missing automatic_options
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/mode/light/automation:
+    post:
+      tags:
+        - Automation mode
+      summary: Set light to automatic mode
+      description: >
+        Switch the light device to automatic mode. When the light sensor detects that the light level is below one of the values in the `lights` list, 
+        the system will set the light intensity to the corresponding value in the `intensities` list (by index).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - automatic_options
+              properties:
+                automatic_options:
+                  type: object
+                  required:
+                    - lights
+                    - intensities
+                  properties:
+                    lights:
+                      type: array
+                      description: List of light level thresholds that trigger light intensity changes
+                      items:
+                        type: number
+                      example: [1, 2, 3, 4]
+                    intensities:
+                      type: array
+                      description: List of intensities corresponding to light thresholds
+                      items:
+                        type: number
+                      example: [80, 60, 40, 20]
+      responses:
+        '200':
+          description: Light mode successfully set to automatic
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Light set to automatic mode
+        '400':
+          description: Missing or invalid automatic_options
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid or missing automatic_options
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/sensor_data/humid:
+    get:
+      tags:
+        - Data
+      summary: Get humidity sensor data
+      description: Fetch humidity sensor data for a specific date
+      parameters:
+        - name: year
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 2025
+        - name: month
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 5
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 13
+      responses:
+        '200':
+          description: Humidity data fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Fetch humid data successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HumidSensorData'
+        '400':
+          description: Missing or invalid date parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Missing required parameters
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/sensor_data/light:
+    get:
+      tags:
+        - Data
+      summary: Get light sensor data
+      description: Fetch light sensor data for a specific date
+      parameters:
+        - name: year
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 2025
+        - name: month
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 5
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 13
+      responses:
+        '200':
+          description: Light data fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Fetch light data successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LightSensorData'
+        '400':
+          description: Missing or invalid date parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Missing required parameters
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+  /api/sensor_data/temperature:
+    get:
+      tags:
+        - Data
+      summary: Get temperature sensor data
+      description: Fetch temperature sensor data for a specific date
+      parameters:
+        - name: year
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 2025
+        - name: month
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 5
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 13
+      responses:
+        '200':
+          description: Temperature data fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Fetch temperature data successfully
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TempSensorData'
+        '400':
+          description: Missing or invalid date parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Missing required parameters
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Internal server error
+
+components:
+  schemas:
+    TriggerCron:
+      type: object
+      description: Cron-based scheduling options
+      properties:
+        year:
+          type: integer
+          example: 2025
+        month:
+          type: integer
+          example: 5
+        day:
+          type: integer
+          example: 13
+        week:
+          type: integer
+          example: 20
+        day_of_week:
+          type: integer
+          minimum: 0
+          maximum: 6
+          example: 1
+        hour:
+          type: integer
+          example: 14
+        minute:
+          type: integer
+          example: 30
+        second:
+          type: integer
+          example: 0
+      additionalProperties: false
+
+    TriggerInterval:
+      type: object
+      description: Interval-based scheduling options
+      properties:
+        weeks:
+          type: number
+          example: 0
+        days:
+          type: number
+          example: 1
+        hours:
+          type: number
+          example: 2
+        minutes:
+          type: number
+          example: 30
+        seconds:
+          type: number
+          example: 0
+      additionalProperties: false
+
+    JobBase:
+      type: object
+      required:
+        - job_id
+        - device_id
+        - action
+        - action_options
+        - trigger
+        - trigger_options
+      properties:
+        job_id:
+          type: string
+          example: "job-001"
+        device_id:
+          type: string
+          description: Type of device (pump, light, or servo)
+        action:
+          type: string
+        action_options:
+          type: object
+        trigger:
+          type: string
+          enum: [cron, interval]
+        trigger_options:
+          description: Must be either a TriggerCron or TriggerInterval object depending on trigger value
+      oneOf:
+        - $ref: '#/components/schemas/TriggerCron'
+        - $ref: '#/components/schemas/TriggerInterval'
+
+    PumpJob:
+      allOf:
+        - $ref: '#/components/schemas/JobBase'
+        - type: object
+          properties:
+            device_id:
+              type: string
+              enum: [pump]
+            action:
+              type: string
+              example: "Turn on for a given duration"
+            action_options:
+              type: object
+              required: [duration]
+              properties:
+                duration:
+                  type: integer
+                  example: 30
+
+    LightJob:
+      allOf:
+        - $ref: '#/components/schemas/JobBase'
+        - type: object
+          properties:
+            device_id:
+              type: string
+              enum: [light]
+            action:
+              type: string
+              example: "Turn on/off light with the given intensity"
+            action_options:
+              type: object
+              required: [intensity]
+              properties:
+                intensity:
+                  type: integer
+                  minimum: 0
+                  maximum: 4
+                  example: 3
+
+    ServoJob:
+      allOf:
+        - $ref: '#/components/schemas/JobBase'
+        - type: object
+          properties:
+            device_id:
+              type: string
+              enum: [servo]
+            action:
+              type: string
+              example: "Open the cover to a certain angle"
+            action_options:
+              type: object
+              required: [angle]
+              properties:
+                angle:
+                  type: integer
+                  minimum: 0
+                  maximum: 180
+                  example: 90
+
+    HumidSensorData:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+          example: "2025-05-13T08:30:00Z"
+        data:
+          type: integer
+          description: Humidity sensor value
+          example: 45
+
+    LightSensorData:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+          example: "2025-05-13T10:15:00Z"
+        data:
+          type: integer
+          description: Light sensor value
+          example: 30
+
+    TempSensorData:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+          example: "2025-05-13T10:15:00Z"
+        data:
+          type: integer
+          description: Temperature sensor value
+          example: 35
+
+
+
+

@@ -22,7 +22,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/api/adafruit/fan/",
+					"raw": "{{base_url}}/api/adafruit/fanSSS/",
 					"host": [
 						"{{base_url}}"
 					],

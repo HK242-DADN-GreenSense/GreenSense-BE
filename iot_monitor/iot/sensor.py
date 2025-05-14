@@ -195,17 +195,19 @@ class temperatureListener(sensorListener):
     temperature_list = servo_automatic_option['temperatures']
     angle_list = servo_automatic_option['angles']
     
-    # print(angle_list)
-    
+    sorted_temperature_angle_pairs = sorted(zip(temperature_list, angle_list), key=lambda x: x[0])
+    sorted_temperature_list, sorted_angle_list = zip(*sorted_temperature_angle_pairs)
+      
     flag_is_modified = False
-    for index, temperature in enumerate(temperature_list):   
+    for index, temperature in enumerate(sorted_temperature_list):   
       if int(data) > temperature:
         # Open servo
-        servo_angle = angle_list[index]
+        servo_angle = sorted_angle_list[index]
         self._controller.add_command(temperatureModify(self._client, self._feed_gadget_modify, servo_angle))
         self._controller.excute_command()
         flag_is_modified = True
         break
+
     if not flag_is_modified:
       # Close servo
       servo_angle = 0
@@ -226,21 +228,29 @@ class lightingListener(sensorListener):
     light_automatic_option = get_automatic_options("light")
     light_list = light_automatic_option['lights']
     light_intensity_list = light_automatic_option['intensities']
-    
+
+    # Sort lights in descending order and adjust intensities accordingly
+    sorted_light_intensity_pairs = sorted(zip(light_list, light_intensity_list), key=lambda x: x[0], reverse=True)
+    sorted_light_list, sorted_light_intensity_list = zip(*sorted_light_intensity_pairs)
+
+    # Now, sorted_light_list and sorted_light_intensity_list are aligned and sorted in descending order
+    # Proceed with the original logic
     flag_is_modified = False
-    for index, light in enumerate(light_list):   
+    for index, light in enumerate(sorted_light_list):   
       if int(data) < light:
         # Turn on light
-        light_power = light_intensity_list[index]
+        light_power = sorted_light_intensity_list[index]
         self._controller.add_command(lightingModify(self._client, self._feed_gadget_modify, light_power))
         self._controller.excute_command()
         flag_is_modified = True
         break
+
     if not flag_is_modified:
       # Turn off light
       light_power = 0
       self._controller.add_command(lightingModify(self._client, self._feed_gadget_modify, light_power))
       self._controller.excute_command()
+
 class gadgetListener(sensorListener):
   def __init__(self, feed_sensor, feed_gadget_modify, client: Adafruit):
     super().__init__(feed_sensor, feed_gadget_modify, client)

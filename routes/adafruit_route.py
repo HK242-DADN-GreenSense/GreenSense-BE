@@ -45,56 +45,6 @@ def route_adafruit_pump_duration():
 
 @ada_fruit.route('/api/adafruit/servo', methods=['POST'])
 def route_adafruit_servo():
-	"""
-	Control servo position
-	---
-	parameters:
-	  - name: body
-		in: body
-		required: true
-		schema:
-		  type: object
-		  required:
-			- angle
-		  properties:
-			angle:
-			  type: number
-			  minimum: 0
-			  maximum: 180
-			  description: Servo angle between 0 and 180 degrees
-			  example: 90
-	responses:
-	  200:
-		description: Servo angle set successfully
-		schema:
-		  properties:
-			success:
-			  type: boolean
-			  example: true
-			angle:
-			  type: number
-			  example: 90
-	  400:
-		description: Invalid request parameters
-		schema:
-		  properties:
-			success:
-			  type: boolean
-			  example: false
-			message:
-			  type: string
-			  example: "Angle must be between 0 and 180"
-	  500:
-		description: Server error
-		schema:
-		  properties:
-			success:
-			  type: boolean
-			  example: false
-			message:
-			  type: string
-			  example: "Error message"
-	"""
 	try:
 		data = request.get_json()
 		

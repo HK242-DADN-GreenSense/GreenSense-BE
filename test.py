@@ -31,5 +31,14 @@ def get_modes_info() -> dict:
 
     return current_modes
 
+
+def test(temperature_list, angle_list):
+    print(temperature_list)
+    print(angle_list)
+    sorted_temperature_angle_pairs = sorted(zip(temperature_list, angle_list), key=lambda x: x[0])
+    sorted_temperature_list, sorted_angle_list = zip(*sorted_temperature_angle_pairs)
+    print(sorted_temperature_list)
+    print(sorted_angle_list)
+
 if __name__ == "__main__":
-    change_mode('pump', 'manual')
+    test([30, 90, 50, 40], [45, 90, 75, 50])
