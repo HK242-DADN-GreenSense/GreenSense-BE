@@ -1,6 +1,7 @@
 """ GreenSense backend package """
 
 from flask                              import Flask, jsonify
+from flask_cors                         import CORS, cross_origin
 from flask_pymongo                      import MongoClient
 from Adafruit_IO                        import Client, RequestError, Feed
 from pymongo.database                   import Database
@@ -10,7 +11,7 @@ from flask_socketio                     import SocketIO
 from .config                            import *
 
 app = Flask(__name__)
-
+cors = CORS(app)
 # Initialize SocketIO after creating your Flask app
 socketio = SocketIO(app, cors_allowed_origins="*")
 
