@@ -54,7 +54,7 @@ def route_adafruit_servo():
 				'message': 'Missing angle parameter'
 			}), 400
 			
-		angle = float(data['angle'])
+		angle = int(data['angle'])
 		return ctl_adafruit_servo(angle)
 		
 	except Exception as e:
