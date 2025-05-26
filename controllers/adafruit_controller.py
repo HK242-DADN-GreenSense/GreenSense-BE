@@ -1,5 +1,6 @@
 from Adafruit_IO import Feed
 import time
+import threading
 
 from .. import aio
 
@@ -74,30 +75,34 @@ def ctl_adafruit_pump(status: str):
         }, 500
 
 def ctl_adafruit_pump_duration(duration: int):
-    try:
-        pump_feed = aio.feeds('pump')
-    except Exception:
-        pump = Feed(name='pump')
-        pump_feed = aio.create_feed(pump)
-        
-    try:
-        aio.send_data(pump_feed.key, 1)
-        print(f'{time.strftime('%Y-%m-%d %H:%M:%S')}: pump was turned on')
-        
-        time.sleep(duration)
-        
-        aio.send_data(pump_feed.key, 0)
-        print(f'{time.strftime('%Y-%m-%d %H:%M:%S')}: pump was turned off')
+    def run_pump():
+        try:
+            try:
+                pump_feed = aio.feeds('pump')
+            except Exception:
+                pump = Feed(name='pump')
+                pump_feed = aio.create_feed(pump)
             
-        return {
-            'success': True,
-            'message': f"Pump was turn on for {duration} second(s)"
-        }, 200
-    except Exception as e:
-        print("Error while pushing value to Adafruit server")
-        return {
-            'success': False
-        }, 500
+            aio.send_data(pump_feed.key, 1)
+            print(f'{time.strftime("%Y-%m-%d %H:%M:%S")}: pump was turned on')
+            
+            time.sleep(duration)
+            
+            aio.send_data(pump_feed.key, 0)
+            print(f'{time.strftime("%Y-%m-%d %H:%M:%S")}: pump was turned off')
+        
+        except Exception as e:
+            print("Error while pushing value to Adafruit server:", str(e))
+
+    # Start the thread
+    thread = threading.Thread(target=run_pump)
+    thread.start()
+
+    return {
+        'success': True,
+        'message': f"Pump is scheduled to run for {duration} second(s)"
+    }, 200
+
     
 def ctl_adafruit_fan(speed):
     if speed < 0 or speed > 255:
