@@ -195,10 +195,11 @@ class temperatureListener(sensorListener):
     temperature_list = servo_automatic_option['temperatures']
     angle_list = servo_automatic_option['angles']
     
-    sorted_temperature_angle_pairs = sorted(zip(temperature_list, angle_list), key=lambda x: x[0])
+    sorted_temperature_angle_pairs = sorted(zip(temperature_list, angle_list), key=lambda x: x[0], reverse=True)
     sorted_temperature_list, sorted_angle_list = zip(*sorted_temperature_angle_pairs)
       
     flag_is_modified = False
+    print(sorted_temperature_list, sorted_angle_list)
     for index, temperature in enumerate(sorted_temperature_list):   
       if int(data) > temperature:
         # Open servo
