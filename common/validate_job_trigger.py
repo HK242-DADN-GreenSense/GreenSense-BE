@@ -14,8 +14,8 @@ def vallidate_cron_job_option(options) -> bool:
     
     for option in cron_options:
         if option in options:
-            if not options[option].isnumeric():
-                return False
+            # if not options[option].isnumeric():
+            #     return False
             
             if option == "year" and (int(options[option]) < 0):
                 return False
