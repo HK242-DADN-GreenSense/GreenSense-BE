@@ -2,9 +2,22 @@ import time
 import os
 from ..config import LOG_DIR
 
+# DEPLOYMENT_ENV = {
+#   "ADAFRUIT_IO_KEY": 'aio_CNzr15m68WWUQ8iAb8RarG68ffFL',
+#   "ADAFRUIT_IO_USERNAME": 'trananhkhoitv',
+#   "IOT_GADGET": [
+#     ('humid', 'pump'),
+#     ('temperature', 'servo'),
+#     ('light-sensor', 'light'),
+#     ('pump', ""),
+#     ('servo', ""),
+#     ('light', "")
+#   ]
+# }
+
 DEPLOYMENT_ENV = {
-  "ADAFRUIT_IO_KEY": 'aio_CNzr15m68WWUQ8iAb8RarG68ffFL',
-  "ADAFRUIT_IO_USERNAME": 'trananhkhoitv',
+  "ADAFRUIT_IO_KEY": 'aio_TESy52RYyQKkj0g1CsaOUOKUTKPU',
+  "ADAFRUIT_IO_USERNAME": 'hieuduongk22bk',
   "IOT_GADGET": [
     ('humid', 'pump'),
     ('temperature', 'servo'),

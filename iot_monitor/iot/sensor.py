@@ -47,8 +47,8 @@ class sensorManager:
         condition = rule['condition']
         message = rule['message']
 
-        if (condition == 'greater_than' and int(data) > threshold) or \
-           (condition == 'less_than' and int(data) < threshold):
+        if (condition == 'greater_than' and float(data) > threshold) or \
+           (condition == 'less_than' and float(data) < threshold):
             emit_sensor_data('notification', message, log_data['time'])
             
     self.__listener['log'].update(log_data)
@@ -83,6 +83,7 @@ class Sensor:
 
       # (feed_id, payload)
       while len(datas) != 0:
+        # print(datas[0])
         if datas[0][0] == 'humid':
           self.updateHumidData(datas[0][1])
 
@@ -134,7 +135,7 @@ class logListener(sensorListener):
   def update(self, data):
     document = {
       "time": data['time'],
-      "data": int(data['data'])
+      "data": float(data['data'])
     }
     event_type = data['event_type']
     
@@ -150,7 +151,7 @@ class logListener(sensorListener):
     else:
       document = {
         "time": data['time'],
-        "data": int(data['data']),
+        "data": float(data['data']),
         "activity_type": data['event_type']
       }
       activity_collection.insert_one(document=document)
@@ -168,15 +169,16 @@ class humidListener(sensorListener):
 
     # logic điều chỉnh độ ẩm như thế nào thì bỏ vào đây
     pump_automatic_options = get_automatic_options("pump")
-    
-    if (int(data) < int(pump_automatic_options['threshold'])):
+    print(data, pump_automatic_options['threshold'])
+    if (float(data) < float(pump_automatic_options['threshold'])):
       # Turn on water pump
       update_data = 1
       self._controller.add_command(waterModify(self._client, self._feed_gadget_modify, update_data))
       self._controller.excute_command()
       
       # Turn off water pump
-      time.sleep(int(pump_automatic_options['duration']))
+      print(float(pump_automatic_options['duration']))
+      time.sleep(float(pump_automatic_options['duration']))
       update_data = 0
       self._controller.add_command(waterModify(self._client, self._feed_gadget_modify, update_data))
       self._controller.excute_command()
@@ -201,7 +203,7 @@ class temperatureListener(sensorListener):
     flag_is_modified = False
     print(sorted_temperature_list, sorted_angle_list)
     for index, temperature in enumerate(sorted_temperature_list):   
-      if int(data) > temperature:
+      if float(data) > temperature:
         # Open servo
         servo_angle = sorted_angle_list[index]
         self._controller.add_command(temperatureModify(self._client, self._feed_gadget_modify, servo_angle))
@@ -237,10 +239,12 @@ class lightingListener(sensorListener):
     # Now, sorted_light_list and sorted_light_intensity_list are aligned and sorted in descending order
     # Proceed with the original logic
     flag_is_modified = False
-    for index, light in enumerate(sorted_light_list):   
-      if int(data) < light:
+    print(sorted_light_list, sorted_light_intensity_list)
+    for index, light in enumerate(sorted_light_intensity_list):   
+      print("sensor-data: ", float(data), light)
+      if float(data) < light:
         # Turn on light
-        light_power = sorted_light_intensity_list[index]
+        light_power = sorted_light_list[index]
         self._controller.add_command(lightingModify(self._client, self._feed_gadget_modify, light_power))
         self._controller.excute_command()
         flag_is_modified = True
