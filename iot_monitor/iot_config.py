@@ -3,8 +3,8 @@ import os
 from ..config import LOG_DIR
 
 # DEPLOYMENT_ENV = {
-#   "ADAFRUIT_IO_KEY": 'aio_CNzr15m68WWUQ8iAb8RarG68ffFL',
-#   "ADAFRUIT_IO_USERNAME": 'trananhkhoitv',
+#   "ADAFRUIT_IO_KEY": 'ADAFRUIT_IO_KEY',
+#   "ADAFRUIT_IO_USERNAME": 'ADAFRUIT_IO_USERNAME',
 #   "IOT_GADGET": [
 #     ('humid', 'pump'),
 #     ('temperature', 'servo'),
@@ -16,8 +16,8 @@ from ..config import LOG_DIR
 # }
 
 DEPLOYMENT_ENV = {
-  "ADAFRUIT_IO_KEY": 'aio_TESy52RYyQKkj0g1CsaOUOKUTKPU',
-  "ADAFRUIT_IO_USERNAME": 'hieuduongk22bk',
+  "ADAFRUIT_IO_KEY": 'ADAFRUIT_IO_KEY',
+  "ADAFRUIT_IO_USERNAME": 'ADAFRUIT_IO_USERNAME',
   "IOT_GADGET": [
     ('humid', 'pump'),
     ('temperature', 'servo'),
